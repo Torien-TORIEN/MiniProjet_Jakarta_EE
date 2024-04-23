@@ -1,0 +1,67 @@
+### GET All Scores
+GET http://localhost:8080/TestAPI/api/scores/
+
+### GET Scores By Id
+GET http://localhost:8080/TestAPI/api/scores/1
+
+### GET Scores By User id
+GET http://localhost:8080/TestAPI/api/scores/user/1
+
+### GET Sorted by date Scores By User id
+GET http://localhost:8080/TestAPI/api/scores/sort/user/1
+
+### GET Sorted by score Scores By Test id
+GET http://localhost:8080/TestAPI/api/scores/test/1
+
+
+
+### ADD Score
+POST http://localhost:8080/TestAPI/api/scores
+Content-Type: application/json
+
+{
+  "id": 3,
+  "score": 95.5,
+  "date": 1713916800000,
+  "user": {
+    "id": 1,
+    "nom": "Doe",
+    "prenom": "John",
+    "email": "john.doe@example.com",
+    "sexe": "M",
+    "password": "",
+    "role": "USER",
+    "datenaiss": 631148400000
+  },
+  "test": {
+    "id": 1,
+    "categorie": "Java"
+  }
+}
+
+### DELETE Score
+DELETE http://localhost:8080/TestAPI/api/scores/3
+
+### UPDATE Score
+PUT http://localhost:8080/TestAPI/api/scores/3
+Content-Type: application/json
+
+{
+  "id": 3,
+  "score": 90.5,
+  "date": 1713916800000,
+  "user": {
+    "id": 1,
+    "nom": "Doe",
+    "prenom": "John",
+    "email": "john.doe@example.com",
+    "sexe": "M",
+    "password": "",
+    "role": "USER",
+    "datenaiss": 631148400000
+  },
+  "test": {
+    "id": 2,
+    "categorie": "Général"
+}
+}

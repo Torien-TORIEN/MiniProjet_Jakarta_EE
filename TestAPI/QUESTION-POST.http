@@ -1,0 +1,41 @@
+### GET All Questions
+GET http://localhost:8080/TestAPI/api/questions/
+
+### GET Question By Id
+GET http://localhost:8080/TestAPI/api/questions/20
+
+### GET User By email
+GET http://localhost:8080/TestAPI/api/questions/random?nb=2
+
+
+
+
+### ADD Question
+POST http://localhost:8080/TestAPI/api/questions?id_test=1
+Content-Type: application/json
+
+{
+  "id": 20,
+  "question": "Quelle est la différence principale entre Spring Boot et Java EE ?",
+  "reponse": "Spring Boot est un framework Java pour le développement d'applications basées sur des microservices, offrant une configuration automatique et une intégration étroite avec Spring Framework, tandis que Java EE est une spécification Java pour le développement d'applications d'entreprise, offrant une plateforme complète avec un ensemble de technologies standardisées.",
+  "rep1": "Spring Boot est un conteneur léger pour l'exécution d'applications Spring, tandis que Java EE est un framework basé sur des annotations pour le développement d'applications web.",
+  "rep2": "Spring Boot est un framework pour le développement d'applications front-end, tandis que Java EE est principalement destiné au développement back-end.",
+  "rep3": "Spring Boot est une version plus ancienne de Spring Framework, tandis que Java EE est la dernière version avec des fonctionnalités améliorées."
+}
+
+
+### DELETE Question
+DELETE http://localhost:8080/TestAPI/api/questions/20
+
+### UPDATE Question
+PUT http://localhost:8080/TestAPI/api/questions/20
+Content-Type: application/json
+
+{
+  "id": 20,
+  "question": "C'est quoi la différence principale entre Spring Boot et Java EE ?",
+  "reponse": "Spring Boot est un framework Java pour le développement d'applications basées sur des microservices, offrant une configuration automatique et une intégration étroite avec Spring Framework, tandis que Java EE est une spécification Java pour le développement d'applications d'entreprise, offrant une plateforme complète avec un ensemble de technologies standardisées.",
+  "rep1": "Spring Boot est un conteneur léger pour l'exécution d'applications Spring, tandis que Java EE est un framework basé sur des annotations pour le développement d'applications web.",
+  "rep2": "Spring Boot est un framework pour le développement d'applications front-end, tandis que Java EE est principalement destiné au développement back-end.",
+  "rep3": "Spring Boot est une version plus ancienne de Spring Framework, tandis que Java EE est la dernière version avec des fonctionnalités améliorées."
+}

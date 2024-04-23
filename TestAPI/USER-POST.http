@@ -1,0 +1,46 @@
+### GET All Users
+GET http://localhost:8080/TestAPI/api/users/
+
+### GET User By Id
+GET http://localhost:8080/TestAPI/api/users/3
+
+### GET User By email
+GET http://localhost:8080/TestAPI/api/users/email/torien@qcm.com
+
+
+### LOGIN
+POST http://localhost:8080/TestAPI/api/users/login
+Content-Type: application/x-www-form-urlencoded
+
+email=torien@qcm.com&password=123
+
+### ADD User
+POST http://localhost:8080/TestAPI/api/users
+Content-Type: application/json
+
+{
+    "id": 3,
+    "nom": "TORIEN",
+    "prenom": "TOTO",
+    "email": "torien@qcm.com",
+    "sexe": "M",
+    "password": "123",
+    "datenaiss": "1999-05-24"
+}
+
+### DELETE USER
+DELETE http://localhost:8080/TestAPI/api/users/3
+
+### UPDATE USER
+PUT http://localhost:8080/TestAPI/api/users/3
+Content-Type: application/json
+
+{
+    "id": 3,
+    "nom": "TORIEN",
+    "prenom": "X",
+    "email": "torien@qcm.com",
+    "sexe": "M",
+    "password": "123",
+    "datenaiss": "1999-05-24"
+}

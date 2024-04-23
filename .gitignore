@@ -1,0 +1,33 @@
+#Ignore metadata
+.metadata
+
+
+
+# Ignore les fichiers de configuration système
+
+
+# Ignore les fichiers de compilation
+
+# Ignore les fichiers de configuration d'IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+*.classpath
+*.project
+
+
+# Ignore les fichiers de logs et les fichiers générés
+/logs/
+*.log
+*.log.*
+*.db
+
+# Ignore les fichiers de cache
+/.cache/
+
+# Ignore les fichiers temporaires
+*.tmp
+
+# Ignore les fichiers de sauvegarde
+*~

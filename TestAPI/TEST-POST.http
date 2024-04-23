@@ -1,0 +1,37 @@
+### GET All Tests
+GET http://localhost:8080/TestAPI/api/tests/
+
+### GET Test By Id
+GET http://localhost:8080/TestAPI/api/tests/2
+
+### GET Questions By Test id
+GET http://localhost:8080/TestAPI/api/tests/2/questions
+
+
+### GET Random Questions For Test id
+GET http://localhost:8080/TestAPI/api/tests/1/randomQuestions?count=3
+
+
+
+
+### ADD Question
+POST http://localhost:8080/TestAPI/api/tests
+Content-Type: application/json
+
+{
+  "id": 4,
+  "categorie": "Science"
+}
+
+
+### DELETE Question
+DELETE http://localhost:8080/TestAPI/api/tests/4
+
+### UPDATE Question
+PUT http://localhost:8080/TestAPI/api/tests/4
+Content-Type: application/json
+
+{
+  "id": 4,
+  "categorie": "Sciences"
+}

@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Utilisateur {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Laisser MySQL l'attribut
 	private int id;
 	private String nom,prenom,email,sexe,password,role;
 	private Date datenaiss;

@@ -43,9 +43,12 @@ public class QuestionService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addQuestion(Question question, @QueryParam("id_test") int idTest) {
         try {
+        	System.out.println("API Question :\nid_test ="+idTest+"\n"+question);
             daoQuestion.addQuestion(question, idTest);
             return Response.status(Response.Status.CREATED).entity("Question added successfully").build();
         } catch (Exception e) {
+        	System.out.println("API error  : "+e.getMessage());
+        	e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error: " + e.getMessage()).build();
         }
     }

@@ -75,7 +75,7 @@ public class UtilisateurService {
     public Response login(@FormParam("email") String email, @FormParam("password") String password) {
         try {
             //DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
-        	System.out.println("LOGIN :"+email +" : "+password);
+        	//System.out.println("API LOGIN :"+email +" : "+password);
             Utilisateur user = daoUtilisateur.login(email, password);
             return Response.ok(user).build();
         } catch (Exception e) {

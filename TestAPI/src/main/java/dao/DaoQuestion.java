@@ -41,7 +41,7 @@ public class DaoQuestion implements IDaoQuestion {
     }
 
 
-    @Override
+   /* @Override
     public void addQuestion(Question q, int idTest) {
         entityManager.getTransaction().begin();
         Test test = entityManager.find(Test.class, idTest);
@@ -52,7 +52,28 @@ public class DaoQuestion implements IDaoQuestion {
         } else {
             throw new IllegalArgumentException("Test with ID " + idTest + " not found");
         }
+    }*/
+    
+    @Override
+    public void addQuestion(Question q, int idTest) {
+        entityManager.getTransaction().begin();
+        Test test = entityManager.find(Test.class, idTest);
+        if (test != null) {
+            q.setTest(test);
+            // Vérifier si l'entité Question est déjà gérée par la session Hibernate
+            if (q.getId() == 0) {
+                // Si l'entité Question n'est pas gérée, la rattacher à la session
+                entityManager.persist(q);
+            } else {
+                // Si l'entité Question est déjà gérée, la fusionner avec la session
+                entityManager.merge(q);
+            }
+            entityManager.getTransaction().commit();
+        } else {
+            throw new IllegalArgumentException("Test with ID " + idTest + " not found");
+        }
     }
+
 
 
 

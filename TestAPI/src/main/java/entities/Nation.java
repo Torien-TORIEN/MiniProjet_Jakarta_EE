@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity @Table(name="Nations")
 public class Nation {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String nom;
 	private int population;

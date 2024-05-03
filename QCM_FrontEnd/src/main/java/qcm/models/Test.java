@@ -1,9 +1,15 @@
 package qcm.models;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpServletRequest;
 
-public class Test {
+public class Test implements Serializable  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String categorie;
 	

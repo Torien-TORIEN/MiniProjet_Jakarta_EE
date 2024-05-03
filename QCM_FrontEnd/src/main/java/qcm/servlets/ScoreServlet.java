@@ -23,6 +23,8 @@ import qcm.models.Question;
 import qcm.models.Score;
 import qcm.models.Test;
 import qcm.models.Utilisateur;
+import qcm.services.ReponseCode;
+import qcm.services.ScoreService;
 
 /**
  * Servlet implementation class ScoreServlet
@@ -30,12 +32,15 @@ import qcm.models.Utilisateur;
 @WebServlet("/ScoreServlet")
 public class ScoreServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ScoreService service;
+	
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ScoreServlet() {
         super();
+        this.service=new ScoreService();
         // TODO Auto-generated constructor stub
     }
 
@@ -47,53 +52,21 @@ public class ScoreServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		try {
 			Utilisateur user =(Utilisateur)session.getAttribute("user");
-		
-			ArrayList<Score> scores = null;
-	        String apiUrl = "http://localhost:8080/TestAPI/api/scores/sort/user/"+user.getId();
-	
-	        try {
-	            // Créer une URL pour l'API
-	            URL url = new URL(apiUrl);
-	
-	            // Ouvrir une connexion HTTP avec l'API
-	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	            connection.setRequestMethod("GET");
-	
-	            // Récupérer la réponse de l'API
-	            InputStream inputStream = connection.getInputStream();
-	            Scanner scanner = new Scanner(inputStream, "UTF-8");
-	
-	            // Lire la réponse JSON
-	            StringBuilder jsonResponse = new StringBuilder();
-	            while (scanner.hasNextLine()) {
-	                jsonResponse.append(scanner.nextLine());
-	            }
-	
-	            // Fermer les ressources
-	            scanner.close();
-	            inputStream.close();
-	            connection.disconnect();
-	
-	            // Convertir la réponse JSON en une liste d'objets Test
-	            ObjectMapper objectMapper = new ObjectMapper();
-	            scores = objectMapper.readValue(jsonResponse.toString(),
-	                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, Score.class));
-	            
-	            for(Score sc :scores)
-	            {
-	            	System.out.println(sc);
-	            }
+			try {
+				ArrayList<Score> scores = service.getAllScoresByUser(user);
+				// Mettre les tests dans la session
+		        request.getSession().setAttribute("scores", scores);
+
+		        // Rediriger vers la page appropriée après avoir récupéré les tests
+		        response.sendRedirect(request.getContextPath() + "/Home");
 	
 	        } catch (IOException e) {
 	            e.printStackTrace();
+	         // Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+		        request.setAttribute("javax.servlet.error.exception", e);
+		        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
 	        }
-	
-	        // Mettre les tests dans la session
-	        request.getSession().setAttribute("scores", scores);
-	
-	        // Rediriger vers la page appropriée après avoir récupéré les tests
-	        //request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
-	        response.sendRedirect(request.getContextPath() + "/Home");
 		}catch(Exception e) {
 			System.out.println("Failed to get user in session !");
 			request.getRequestDispatcher("/WEB-INF/Login.jsp").forward(request, response);
@@ -158,27 +131,14 @@ public class ScoreServlet extends HttpServlet {
 	            System.out.println("Le score : "+ score);
 	
 	            // Enregistrer le score dans la base de données
-	            String apiUrl = "http://localhost:8080/TestAPI/api/scores";
-	            URL url = new URL(apiUrl);
-	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	            connection.setRequestMethod("POST");
-	            connection.setRequestProperty("Content-Type", "application/json");
-	            connection.setDoOutput(true);
-	
-	            // Convertir l'objet Score en JSON
-	            ObjectMapper mapper = new ObjectMapper();
-	            String scoreJson = mapper.writeValueAsString(score);
-	
-	            // Envoyer le JSON à l'API
-	            OutputStream os = connection.getOutputStream();
-	            os.write(scoreJson.getBytes());
-	            os.flush();
+	            ReponseCode res =service.addScore(score);
 	
 	            // Vérifier le code de réponse
-	            int responseCode = connection.getResponseCode();
-	            if (responseCode == HttpURLConnection.HTTP_CREATED) {
+	            if (res.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
 	                System.out.println("Score enregistré avec succès !");
-	                doGet(request,response);
+	                ArrayList<Score> scores = service.getAllScoresByUser(user);
+					// Mettre les tests dans la session
+			        session.setAttribute("scores", scores);
 	            } else {
 	                System.out.println("Erreur lors de l'enregistrement du score !");
 	            }
@@ -194,6 +154,10 @@ public class ScoreServlet extends HttpServlet {
 	        response.sendRedirect(request.getContextPath() + "/Home");
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	     // Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+	        request.setAttribute("javax.servlet.error.exception", e);
+	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
 	    }
 	}
 

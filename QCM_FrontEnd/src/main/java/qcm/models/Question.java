@@ -1,12 +1,17 @@
 package qcm.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class Question {
+public class Question implements Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String question,reponse,rep1,rep2,rep3;
 	private Test test;

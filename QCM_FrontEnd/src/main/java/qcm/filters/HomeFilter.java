@@ -19,7 +19,7 @@ import qcm.models.Utilisateur;
 /**
  * Servlet Filter implementation class HomeFilter
  */
-@WebFilter({"/Home", "/", "/Admin"})
+@WebFilter({"/Home", "/", "/Admin","/EditDeleteQuestion","/EditDeleteTest"})
 public class HomeFilter extends HttpFilter implements Filter {
        
     /**
@@ -57,7 +57,7 @@ public class HomeFilter extends HttpFilter implements Filter {
 	    } else {
 	        // Vérifie si l'URL est "/Admin" et que le rôle de l'utilisateur n'est pas "ADMIN"
 	        String requestURI = httpRequest.getRequestURI();
-	        if (requestURI.contains("/Admin") && !user.getRole().equals("ADMIN")) {
+	        if ((requestURI.contains("/Admin")|| requestURI.contains("/EditDeleteQuestion") || requestURI.contains("/EditDeleteTest") )&& !user.getRole().equals("ADMIN")) {
 	            // Redirige vers la page d'accueil si l'URL est "/Admin" et le rôle n'est pas "ADMIN"
 	            httpResponse.sendRedirect("/QCM_FrontEnd/Home");
 	        } else {

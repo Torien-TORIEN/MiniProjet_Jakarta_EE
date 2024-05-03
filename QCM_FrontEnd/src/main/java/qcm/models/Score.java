@@ -1,5 +1,6 @@
 package qcm.models;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,7 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.annotation.JsonFormat;
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Score {
+public class Score implements Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private double score;
 	

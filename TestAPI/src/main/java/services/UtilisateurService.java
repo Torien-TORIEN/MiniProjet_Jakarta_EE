@@ -92,6 +92,7 @@ public class UtilisateurService {
             Utilisateur user = daoUtilisateur.getUserByEmail(email);
             return Response.ok(user).build();
         } catch (Exception e) {
+        	System.out.println("Erreur envoyé par l'API : "+e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error: " + e.getMessage()).build();
         }
     }

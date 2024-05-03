@@ -2,6 +2,7 @@ package qcm.models;
 
 
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,8 +12,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class Utilisateur {
-    private int id;
+public class Utilisateur implements Serializable   {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int id;
     private String nom;
     private String prenom;
     private String email;
@@ -42,6 +47,7 @@ public class Utilisateur {
         try {
             this.dateNaissance = dateFormat.parse(request.getParameter("datenaiss"));
         } catch (ParseException e) {
+        	System.out.println("Problème de conversion de Date dans le model utilisateur !");
             e.printStackTrace(); // Gérer l'erreur de conversion
         }
     }

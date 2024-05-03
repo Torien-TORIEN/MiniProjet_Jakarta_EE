@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import qcm.models.Question;
 import qcm.models.Test;
+import qcm.services.TestService;
 
 import java.util.*;
 
@@ -26,12 +27,13 @@ import java.util.*;
 @WebServlet("/Test")
 public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    private TestService service; 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public TestServlet() {
         super();
+        this.service=new TestService();
         // TODO Auto-generated constructor stub
     }
 
@@ -41,53 +43,24 @@ public class TestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		ArrayList<Test> tests = null;
-        String apiUrl = "http://localhost:8080/TestAPI/api/tests/";
 
         try {
-            // Créer une URL pour l'API
-            URL url = new URL(apiUrl);
-
-            // Ouvrir une connexion HTTP avec l'API
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            // Récupérer la réponse de l'API
-            InputStream inputStream = connection.getInputStream();
-            Scanner scanner = new Scanner(inputStream, "UTF-8");
-
-            // Lire la réponse JSON
-            StringBuilder jsonResponse = new StringBuilder();
-            while (scanner.hasNextLine()) {
-                jsonResponse.append(scanner.nextLine());
-            }
-
-            // Fermer les ressources
-            scanner.close();
-            inputStream.close();
-            connection.disconnect();
-
-            // Convertir la réponse JSON en une liste d'objets Test
-            ObjectMapper objectMapper = new ObjectMapper();
-            tests = objectMapper.readValue(jsonResponse.toString(),
-                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, Test.class));
             
-            for(Test t :tests)
-            {
-            	System.out.println(t);
-            }
+        	tests=service.getAllTests();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+         // Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+	        request.setAttribute("javax.servlet.error.exception", e);
+	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
         }
 
         // Mettre les tests dans la session
         request.getSession().setAttribute("tests", tests);
 
         // Rediriger vers la page appropriée après avoir récupéré les tests
-        //request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
         response.sendRedirect(request.getContextPath() + "/Home");
-        
-        //response.getWriter().append("Served at: ").append(request.getContextPath());
     }
 
 	
@@ -106,12 +79,12 @@ public class TestServlet extends HttpServlet {
 	    // Extraire l'ID du test du contenu du corps de la requête
 	    String requestBodyString = requestBody.toString();
 	    int testId = Integer.parseInt(requestBodyString.split("=")[1]);
-	    System.out.println("IdTest ="+testId);
+	    //System.out.println("IdTest ="+testId);
 
 	    // Faire une requête à l'API pour obtenir les questions aléatoires pour ce test
-	    String apiUrl = "http://localhost:8080/TestAPI/api/tests/" + testId + "/randomQuestions?count=5";
+	    //String apiUrl = "http://localhost:8080/TestAPI/api/tests/" + testId + "/randomQuestions?count=5";
 	    try {
-	        // Créer une URL pour l'API
+	        /*// Créer une URL pour l'API
 	        URL url = new URL(apiUrl);
 
 	        // Ouvrir une connexion HTTP avec l'API
@@ -137,7 +110,8 @@ public class TestServlet extends HttpServlet {
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        List<Question> questions = objectMapper.readValue(jsonResponse.toString(),
 	                objectMapper.getTypeFactory().constructCollectionType(List.class, Question.class));
-
+			*/
+	    	List<Question> questions = service.getRandomQuestionsByTest(testId, 10);
 	        // Mettre les questions dans la session
 	        request.getSession().setAttribute("questions", questions);
 	        if(questions.size()>0) {
@@ -153,16 +127,20 @@ public class TestServlet extends HttpServlet {
 	     
 	        
 	        // Afficher les question
-	        for(Question q :questions) {
+	        /*(Question q :questions) {
 	        	System.out.println(q);
-	        }
+	        }*/
 
 	        // Rediriger vers la page appropriée après avoir récupéré les questions
 	        //request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
 	        response.sendRedirect(request.getContextPath() + "/Home");
 
-	    } catch (IOException e) {
+	    } catch (Exception e) {
 	        e.printStackTrace();
+	     // Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+	        request.setAttribute("javax.servlet.error.exception", e);
+	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
 	    }
 	}
 

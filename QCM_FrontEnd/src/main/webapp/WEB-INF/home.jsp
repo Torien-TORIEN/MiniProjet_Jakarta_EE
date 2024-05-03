@@ -1,5 +1,5 @@
 <%@page import="org.hibernate.internal.build.AllowSysOut"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" errorPage="Error.jsp" %>
 <%@ page import="java.util.*" %>
 <%@ page import="qcm.models.*" %>
 
@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accueil</title>
+  <title>QCM</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Font Awesome -->
@@ -97,9 +97,15 @@
 		    </li>
 	    <%} %>
       <li class="nav-item">
-        <a class="nav-link" href="#"><i class="fas fa-user"></i> <%= user.getNom()+" "+user.getPrenom() %> </a>
+        <a class="nav-link" href="#!"><i class="fas fa-user"></i> <%= user.getNom()+" "+user.getPrenom() %> </a>
       </li>
-    <% }else{ %>
+      <% ArrayList<Question> questions = (ArrayList<Question>) session.getAttribute("questions");
+      	if(questions==null || questions.isEmpty()){
+      %>
+      <li class="nav-item">
+        <a class="nav-link" href="/QCM_FrontEnd/ScoreServlet"><i class="fas fa-trophy"></i> Mes Scores</a>
+      </li>
+    <% }}else{ %>
       <li class="nav-item">
         <a class="nav-link" href="/QCM_FrontEnd/Login"><i class="fas fa-sign-in-alt"></i> Se connecter</a>
       </li>
@@ -176,7 +182,7 @@
 	    <h5 class="card-title">Question <%= iQ +1 %> / <%=questions.size() %></h5>
 	    <!-- Chronomètre -->
 	    <div>
-	      <h6>Chronomètre</h6>
+	      <h6>TEST  <%= q.getTest().getCategorie() %></h6>
 	      <!-- Insérer ici votre code pour le chronomètre -->
 	    </div>
 	  </div>

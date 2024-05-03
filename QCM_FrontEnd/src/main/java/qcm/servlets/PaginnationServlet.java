@@ -6,18 +6,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Home
+ * Servlet implementation class PaginnationServlet
  */
-@WebServlet({"/Home", "/"})
-public class Home extends HttpServlet {
+@WebServlet("/Paginnation")
+public class PaginnationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Home() {
+    public PaginnationServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -26,38 +27,35 @@ public class Home extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		// Ceci est est resevé à la page Admin (Admin.jsp)
+		
 		try {
-		// Obtenir le chemin après "/Home"
-			String path = request.getRequestURI().substring(request.getContextPath().length() + "/Home".length());
-	    
-		if(path.equalsIgnoreCase("/Test")) {
-			System.out.println(" c'est test ");
+			String page = request.getParameter("page");
+			HttpSession session = request.getSession(false);
 			
-			//Recuperer les tests 
-			response.sendRedirect(request.getContextPath() + "/Test");
-		}else if(path.equalsIgnoreCase("")) {
-			//System.out.println(" pas de path : "+ path);
-			request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
-		}else {
-			//System.out.println(" redirect "+ path);
-			response.sendRedirect(request.getContextPath() + "/Home");
-			
-		}
-	    // Afficher le chemin
-	    //System.out.println("Path après /Home : " + path);
+			//Afficher le test
+			if(page!=null && !page.isEmpty() && page.equals("test")) {
+				session.setAttribute("page", page);
+				System.out.println("Test section");
+			}
+			//Afficher le list des questions.
+			else if (page!=null && !page.isEmpty() && page.equals("add_question")) {
+				session.setAttribute("page", page);
+				System.out.println("add_question section");
+			}
+			// Afficher le add ou edit Question
+			else {
+				session.removeAttribute("page");
+				System.out.println("Pagination");
+			}
+			response.sendRedirect(request.getContextPath() + "/Admin");
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
-			//request.getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
+			e.printStackTrace();
 			// Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
 	        request.setAttribute("javax.servlet.error.exception", e);
 	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
 
-			
 		}
-		
-		
 		
 		
 	}
@@ -67,7 +65,6 @@ public class Home extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println(" Do post in HOme servlet ");
 		doGet(request, response);
 	}
 

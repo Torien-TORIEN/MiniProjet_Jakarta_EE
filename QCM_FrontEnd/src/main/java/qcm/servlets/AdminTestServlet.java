@@ -2,6 +2,8 @@ package qcm.servlets;
 
 import qcm.models.Question;
 import qcm.models.Test;
+import qcm.services.QuestionService;
+import qcm.services.ReponseCode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,12 +36,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebServlet("/Admin")
 public class AdminTestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private QuestionService service;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public AdminTestServlet() {
         super();
+        this.service=new QuestionService();
         // TODO Auto-generated constructor stub
     }
 
@@ -56,34 +60,7 @@ public class AdminTestServlet extends HttpServlet {
                 // Convertir l'ID du test en entier
                 int idTest = Integer.parseInt(idTestString);
                 
-                // Faire quelque chose avec l'ID du test (par exemple, l'imprimer pour le tester)
-                System.out.println("ID du test sélectionné : " + idTest);
-                
-                // Appel à l'API pour récupérer les questions associées à ce test
-                String apiUrl = "http://localhost:8080/TestAPI/api/tests/" + idTest + "/questions";
-                URL url = new URL(apiUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-
-                // Récupérer la réponse de l'API
-                InputStream inputStream = connection.getInputStream();
-                Scanner scanner = new Scanner(inputStream, "UTF-8");
-
-                // Lire la réponse JSON
-                StringBuilder jsonResponse = new StringBuilder();
-                while (scanner.hasNextLine()) {
-                    jsonResponse.append(scanner.nextLine());
-                }
-
-                // Fermer les ressources
-                scanner.close();
-                inputStream.close();
-                connection.disconnect();
-
-                // Convertir la réponse JSON en une liste d'objets Question
-                ObjectMapper objectMapper = new ObjectMapper();
-                ArrayList<Question> questions = objectMapper.readValue(jsonResponse.toString(),
-                        objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, Question.class));
+                ArrayList<Question> questions = service.getAllQuestionsByIdTest(idTest);
                 
                 // Mettre les questions dans la session
                 request.getSession().setAttribute("adm_questions", questions);
@@ -96,10 +73,15 @@ public class AdminTestServlet extends HttpServlet {
                 // Gérer l'erreur si l'ID du test n'est pas un entier valide
                 System.out.println("L'ID du test n'est pas un entier valide : " + idTestString);
                 request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
+                
             } catch (Exception e) {
             	System.out.println("Erreur dans le servlet Admin :"+ e.getMessage());
             	e.printStackTrace();
-            	request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
+            	//request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
+            	// Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+    	        request.setAttribute("javax.servlet.error.exception", e);
+    	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
             }
         } else {
             // Si aucun ID de test n'est sélectionné, vous pouvez gérer cela en conséquence
@@ -134,66 +116,27 @@ public class AdminTestServlet extends HttpServlet {
                     test=t;
             }
             question.setTest(test);
+            ReponseCode res = service.addQuestion(question);
             
-            System.out.println("Test :\n"+test);
-            System.out.println("Question :\n"+question);
-
-            // Créer un objet JSONObject pour représenter la question
-            JSONObject questionJson = new JSONObject();
-            questionJson.put("id", question.getId());
-            questionJson.put("question", question.getQuestion());
-            questionJson.put("reponse", question.getReponse());
-            questionJson.put("rep1", question.getRep1());
-            questionJson.put("rep2", question.getRep2());
-            questionJson.put("rep3", question.getRep3());
-
-            // Convertir l'objet JSONObject en chaîne JSON
-            String jsonString = questionJson.toString();
-            System.out.println(jsonString);
-
-            // Appeler l'API pour ajouter la question au test spécifié
-            String apiUrl = "http://localhost:8080/TestAPI/api/questions?id_test="+idTest;
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-
-            OutputStream os = connection.getOutputStream();
-            os.write(jsonString.getBytes());
-            os.flush();
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_CREATED) {
+            if (res.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
                 System.out.println("Question ajoutée avec succès !");
-                request.setAttribute("success", "La question est ajoutée au test <<"+test.getCategorie()+">> avec succès !");
-                request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
-            }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
-            	// Lire le corps de la réponse pour récupérer le message d'erreur
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                StringBuilder errorMessage = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    errorMessage.append(line);
-                }
-                reader.close();
+                request.setAttribute("success", res.getSuccessMessage());
                 
-                // Afficher le message d'erreur ou le stocker pour une utilisation ultérieure
-                System.out.println("Erreur serveur : " + errorMessage.toString());
-                // Ajoutez le message d'erreur à l'attribut "error" pour le transmettre à la page JSP
-                request.setAttribute("error", "Erreur serveur : " + errorMessage.toString());
-                // Rediriger vers la page JSP appropriée
+    	        session.removeAttribute("adm_questions");
+                
                 request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
-            	
-            }else {
-                System.out.println("Erreur lors de l'ajout de la question !" + responseCode);
-                request.setAttribute("error", "Erreur d'ajout, Vérifiez si le serveur est en marche !");
+            }else{
+                request.setAttribute("error", res.getErrorMessage());
                 request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Erreur : "+e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
+            //request.getRequestDispatcher("/WEB-INF/Admin.jsp").forward(request, response);
+         // Erreur lors de la connexion à l'API, rediriger vers la page d'erreur avec l'exception
+	        request.setAttribute("javax.servlet.error.exception", e);
+	        request.getRequestDispatcher("/WEB-INF/Error.jsp").forward(request, response);
+
         }
     }
 

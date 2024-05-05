@@ -19,7 +19,7 @@ import qcm.models.Utilisateur;
 /**
  * Servlet Filter implementation class HomeFilter
  */
-@WebFilter({"/Home", "/", "/Admin","/EditDeleteQuestion","/EditDeleteTest"})
+@WebFilter({"/Home", "/", "/Admin","/EditDeleteQuestion","/EditDeleteTest","/ScoreServlet","/Paginnation"})
 public class HomeFilter extends HttpFilter implements Filter {
        
     /**

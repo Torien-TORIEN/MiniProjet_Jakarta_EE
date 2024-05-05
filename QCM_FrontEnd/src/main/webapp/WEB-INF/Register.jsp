@@ -66,7 +66,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="email" id="form3Example3c" name="email" class="form-control" required="required"/>
+                      <input type="email" id="form3Example3c" name="email" class="form-control" placeholder="prenom.nom@jee.qcm" required="required"/>
                       <label class="form-label" for="form3Example3c">Votre Email</label>
                     </div>
                   </div>

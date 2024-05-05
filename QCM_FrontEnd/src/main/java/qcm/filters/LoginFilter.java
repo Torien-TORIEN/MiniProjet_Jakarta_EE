@@ -43,7 +43,7 @@ public class LoginFilter extends HttpFilter implements Filter {
 		// TODO Auto-generated method stub
 		HttpSession session =((HttpServletRequest)request).getSession();
 		if( ((Utilisateur)session.getAttribute("user"))!=null ) {
-			((HttpServletResponse)response).sendRedirect("/QCM_FrontEnd/");
+			((HttpServletResponse)response).sendRedirect("/QCM_FrontEnd/Home");
 		}else {
 			// pass the request along the filter chain
 			chain.doFilter(request, response);

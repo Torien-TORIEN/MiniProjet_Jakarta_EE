@@ -10,7 +10,7 @@ Ce projet vise à créer un site pour faire un QUIZ. Pour cela nous avons utilis
 - Un "Score" qui conclut la note des QCM effectué avec un score spécifique selon un "Test" à une date donnée
 
 ## Diagramme de classe
-![Diagramme de classe](./Diagramme sans nom.drawio.png)
+![Diagramme de classe](./DiagrammeDeClasse.png)
 
 ## Déroulement de QCM
 Lors de test , 10 questions au hasard sont choisies dans la base de données (MySQL) , et les quatre réponses sont affichées dans l'odre aléatoire sur l'écran de l'utilisateur
